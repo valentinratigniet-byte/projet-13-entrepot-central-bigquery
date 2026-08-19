@@ -1,0 +1,17 @@
+name: 'portfolio_bq'
+version: '1.0.0'
+config-version: 2
+profile: 'portfolio_bq'
+
+model-paths: ["models"]
+target-path: "target"
+clean-targets: ["target", "dbt_packages"]
+
+models:
+  portfolio_bq:
+    staging:
+      +materialized: view
+      +schema: staging
+    marts:
+      +materialized: table
+      +schema: marts

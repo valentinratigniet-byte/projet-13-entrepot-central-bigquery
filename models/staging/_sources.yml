@@ -1,0 +1,15 @@
+version: 2
+
+sources:
+  - name: raw
+    database: portfolio-data-vr
+    schema: raw
+    description: "Tables brutes chargees par dlt depuis PostgreSQL (Projet 07)."
+    tables:
+      - name: customer
+      - name: orders
+      - name: order_item
+      - name: payment
+      - name: product
+      - name: category
+      - name: country_names

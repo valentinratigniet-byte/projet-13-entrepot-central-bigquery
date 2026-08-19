@@ -1,0 +1,16 @@
+# Python
+.venv/
+__pycache__/
+*.pyc
+
+# dbt
+target/
+dbt_packages/
+logs/
+
+# Cles / secrets (la cle du compte de service vit hors repo, dans ~/.gcp/)
+*.json
+!models/**/*.json
+
+# dlt (etat local du pipeline)
+.dlt/
