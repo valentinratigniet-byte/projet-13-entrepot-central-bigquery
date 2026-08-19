@@ -6,6 +6,10 @@
 > mais l'infra change complètement — BigQuery, IAM, facturation réelle,
 > environnement cloud avec ses propres pannes.
 
+## 📸 Aperçu
+
+![Dashboard entrepôt BigQuery — vue d'ensemble](outputs/dashboard-vue-ensemble.png)
+
 ## 🧩 Ce que fait le projet
 
 ```
@@ -23,7 +27,10 @@ PostgreSQL (Projet 07, Docker) ──dlt──► BigQuery.raw ──dbt──�
 3. **Qualité** — 12 tests dbt (unicité, non-nullité, intégrité référentielle
    fait → dimensions).
 4. **Restitution** — Power BI se connecte directement au dataset `marts`
-   (natif étoile, prêt à modéliser).
+   (natif étoile, prêt à modéliser). Modèle **documenté in-situ** (description
+   sur chaque table, colonne clé et mesure — voir
+   [docs/data-dictionary.md](docs/data-dictionary.md)) et 17 mesures DAX
+   reprises du [Projet 09](../projet-09-dashboard-powerbi/dax/measures.md).
 
 ## 📊 Résultats
 
@@ -90,7 +97,11 @@ projet-13-entrepot-central-bigquery/
 │   ├── staging/                 ← 7 vues de nettoyage + sources.yml
 │   └── marts/                   ← étoile (dim_customer/product/date, fct_sales) + tests
 ├── dbt_project.yml · macros/generate_schema_name.sql
-└── docs/architecture.md         ← infra GCP (projet, IAM, datasets, coûts)
+├── Dashboard entrepot.pbix      ← modèle + dashboard (documenté in-situ)
+├── outputs/dashboard-vue-ensemble.png
+└── docs/
+    ├── architecture.md          ← infra GCP (projet, IAM, datasets, coûts)
+    └── data-dictionary.md       ← dictionnaire généré depuis le modèle Power BI
 ```
 
 ## 💡 Ce que ce projet démontre en plus des 12 précédents

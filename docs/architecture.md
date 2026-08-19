@@ -50,4 +50,5 @@ des machines perso), aucun de ces contournements n'est nécessaire.
 - [x] La base Postgres du Projet 07 remonte dans `raw` via `dlt` (rejouable)
 - [x] dbt produit `staging` + `marts` (étoile) avec 12/12 tests au vert
 - [x] Lignage `dbt docs` généré (`dbt docs serve` en local)
-- [ ] Power BI branché sur `marts` — prochaine étape (session Power BI Desktop séparée)
+- [x] Power BI branché sur `marts` — modèle en étoile, 3 relations, table de
+      dates, 17 mesures DAX, documentation in-situ (tables/colonnes/mesures)
