@@ -38,7 +38,7 @@ flowchart LR
    (natif étoile, prêt à modéliser). Modèle **documenté in-situ** (description
    sur chaque table, colonne clé et mesure — voir
    [docs/data-dictionary.md](docs/data-dictionary.md)) et 17 mesures DAX
-   reprises du [Projet 09](../projet-09-dashboard-powerbi/dax/measures.md).
+   reprises du [Projet 09](https://github.com/valentinratigniet-byte/projet-09-dashboard-powerbi/blob/main/dax/measures.md).
 
 ## 📊 Résultats
 
@@ -54,7 +54,7 @@ flowchart LR
 
 Prérequis : `gcloud` CLI connecté, projet GCP avec facturation activée
 (reste dans le free tier — volumes très en dessous des seuils gratuits),
-Docker + base du [Projet 07](../projet-07-base-ecommerce) démarrée.
+Docker + base du [Projet 07](https://github.com/valentinratigniet-byte/projet-07-base-ecommerce) démarrée.
 
 ```bash
 python -m venv .venv && .venv\Scripts\activate      # Windows
@@ -125,6 +125,6 @@ projet-13-entrepot-central-bigquery/
 
 ---
 
-*Projet 13 (hors roadmap initiale) du [Portfolio Data](../). Réutilise la
+*Projet 13 (hors roadmap initiale) du [Portfolio Data](https://github.com/valentinratigniet-byte). Réutilise la
 base du Projet 07 et le modèle du Projet 09 — dernière brique de
 l'écosystème connecté, côté cloud.*

@@ -43,7 +43,7 @@ Champs de Power BI). Ce fichier en est la synthèse.
 | 3. Ratios | `Taux récurrence %` | Part des clients ayant passé plus d'une commande. |
 | 4. Mise en forme | `Tendance YoY` | Indicateur ▲▼▬ selon la croissance annuelle. |
 
-Détail complet des formules : [Projet 09 — dax/measures.md](../projet-09-dashboard-powerbi/dax/measures.md)
+Détail complet des formules : [Projet 09 — dax/measures.md](https://github.com/valentinratigniet-byte/projet-09-dashboard-powerbi/blob/main/dax/measures.md)
 (mêmes mesures, même modèle en étoile).
 
 ## Relations
