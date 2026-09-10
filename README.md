@@ -50,6 +50,39 @@ flowchart LR
 
 **dbt test : 12/12 PASS.**
 
+## 🔬 Qualité des données (mesurée)
+
+Audit exécuté directement sur BigQuery (`bq query`, pas de simulation) — 13
+contrôles, mêmes vérifications structurelles que le
+[Projet 09](https://github.com/valentinratigniet-byte/projet-09-dashboard-powerbi)
+(même source, même modèle en étoile) plus les vérifications propres à `dlt` :
+
+| Contrôle | Résultat mesuré |
+|---|---:|
+| Doublons de clé (`dim_customer`, `dim_product`) | 0 partout |
+| `fct_sales` — orphelins vers `dim_customer` / `dim_product` / `dim_date` | 0 / 0 / 0 |
+| `fct_sales.quantity` ≤ 0 | 0 |
+| `line_amount` ≠ `quantity × unit_price` (écart > 0,01) | 0 |
+| `unit_price` de la vente ≠ `price` catalogue produit | 0 |
+| `raw.orders` — lignes avec `_dlt_id` NULL | 0 |
+| `raw.orders` — doublons `_dlt_id` ou `id` métier | 0 / 0 |
+
+**Résultat identique au Projet 09 : aucune anomalie** — cohérent, puisque
+c'est la même donnée source (Projet 07) et le même modèle, seule l'infra
+change. La confirmation attendue plutôt qu'une découverte, et c'est
+justement le point du Projet 13 : prouver que le modèle est réellement
+portable, pas juste théoriquement compatible.
+
+**Comportement `dlt` confirmé, pas supposé** — `raw._dlt_loads` liste
+**2 runs historisés**, mais `raw.orders` ne contient qu'**1 seul**
+`_dlt_load_id` distinct : `write_disposition="replace"`
+([`src/load_postgres_to_bq.py`](src/load_postgres_to_bq.py)) remplace bien
+la table entière à chaque run — dlt garde la trace de *quand* les runs ont
+eu lieu, mais pas les anciennes lignes elles-mêmes. Comportement voulu
+(l'ERP source représente l'état courant, pas un flux à accumuler — même
+principe que le Projet 19), vérifié en base plutôt que déduit de la
+documentation dlt.
+
 ## 🚀 Reproduire
 
 Prérequis : `gcloud` CLI connecté, projet GCP avec facturation activée
