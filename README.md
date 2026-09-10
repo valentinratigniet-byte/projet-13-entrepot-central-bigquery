@@ -14,11 +14,11 @@
 
 ```mermaid
 flowchart LR
-    PG[("PostgreSQL<br/>Projet 07, Docker")] -->|dlt| RAW[("BigQuery.raw")]
-    RAW -->|dbt-bigquery| STG["staging<br/>7 vues"]
-    STG -->|dbt-bigquery| MARTS["marts<br/>étoile, même modèle que le 09"]
+    PG[("PostgreSQL<br/>Projet 07, Docker")] -- "dlt" --> RAW[("BigQuery.raw")]
+    RAW -- "dbt-bigquery" --> STG["staging<br/>7 vues"]
+    STG -- "dbt-bigquery" --> MARTS["marts<br/>étoile, même modèle que le 09"]
     MARTS --> BI["Power BI<br/>17 mesures DAX"]
-    IAM["Compte de service<br/>dataEditor + jobUser"] -.->|privilège minimal| RAW
+    IAM["Compte de service<br/>dataEditor + jobUser"] -. "privilège minimal" .-> RAW
 
     style MARTS fill:#137A8B,color:#fff
     style PG fill:#E4A93C,color:#1a1a1a
