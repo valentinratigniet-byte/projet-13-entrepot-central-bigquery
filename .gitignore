@@ -14,3 +14,6 @@ logs/
 
 # dlt (etat local du pipeline)
 .dlt/
+
+# Sortie locale de /graphify (exploration perso, pas versionnee)
+graphify-out/
