@@ -17,3 +17,8 @@ logs/
 
 # Sortie locale de /graphify (exploration perso, pas versionnee)
 graphify-out/
+
+# Terraform (état local = détail de l'infra ; tfvars = e-mail du propriétaire)
+infra/.terraform/
+infra/*.tfstate*
+infra/terraform.tfvars

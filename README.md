@@ -84,6 +84,26 @@ eu lieu, mais pas les anciennes lignes elles-mêmes. Comportement voulu
 principe que le Projet 19), vérifié en base plutôt que déduit de la
 documentation dlt.
 
+## 🏗️ Infrastructure as code (Terraform)
+
+Toute l'infrastructure GCP est décrite dans [`infra/`](infra/) : l'API BigQuery, les **6 datasets** (`raw`, `staging`,
+`marts` et leurs jumeaux `ci_*`), les **2 comptes de service** et leurs droits.
+
+| Compte de service | Droits | Usage |
+|---|---|---|
+| `dbt-loader` | `bigquery.dataEditor` + `bigquery.jobUser` (projet) | chargement dlt et dbt en local |
+| `ci-dbt` | `bigquery.jobUser` (projet) + **écriture sur les seuls datasets `ci_*`** | GitHub Actions : ne peut ni lire ni casser la prod |
+
+- **Importée, pas recréée** : l'infrastructure existait (créée en CLI) ; [`imports.tf`](infra/imports.tf) la rattache à
+  Terraform. Résultat du plan : `12 to import, 0 to add, 0 to change, 0 to destroy` — le code décrit exactement ce qui
+  tourne, et toute dérive future apparaît dans `terraform plan`.
+- **Les clés de compte de service restent hors Terraform** : gérées par Terraform, elles seraient écrites en clair dans
+  l'état. Elles sont créées en CLI, rangées hors dépôt (local) ou en secret GitHub (CI).
+- **Garde-fous** : `prevent_destroy` sur les datasets ; droits projet en `iam_member` (additifs, n'écrasent pas ceux
+  ajoutés à côté) ; la CI vérifie `terraform fmt` et `terraform validate` à chaque push.
+- **Limites assumées** : état local (un backend GCS s'impose dès qu'on est plusieurs) ; `dbt-loader` a `dataEditor` au
+  niveau projet, réductible aux trois datasets de prod.
+
 ## 🚀 Reproduire
 
 Prérequis : `gcloud` CLI connecté, projet GCP avec facturation activée
@@ -94,14 +114,10 @@ Docker + base du [Projet 07](https://github.com/valentinratigniet-byte/projet-07
 python -m venv .venv && .venv\Scripts\activate      # Windows
 pip install -r requirements.txt
 
-# 1. Infra (une fois) — datasets + compte de service
-gcloud services enable bigquery.googleapis.com
-bq --location=EU mk --dataset <projet>:raw
-bq --location=EU mk --dataset <projet>:staging
-bq --location=EU mk --dataset <projet>:marts
-gcloud iam service-accounts create dbt-loader
-gcloud iam service-accounts keys create ~/.gcp/dbt-loader.json \
-  --iam-account=dbt-loader@<projet>.iam.gserviceaccount.com
+# 1. Infra (une fois) — datasets, comptes de service, droits : voir « Infrastructure as code »
+cd infra && cp terraform.tfvars.example terraform.tfvars   # e-mail du propriétaire
+terraform init && terraform apply && cd ..
+gcloud iam service-accounts keys create ~/.gcp/dbt-loader.json   --iam-account=dbt-loader@<projet>.iam.gserviceaccount.com
 
 # 2. Extraction PostgreSQL -> raw
 export GOOGLE_APPLICATION_CREDENTIALS=~/.gcp/dbt-loader.json
@@ -139,6 +155,7 @@ projet-13-entrepot-central-bigquery/
 │   ├── staging/                 ← 7 vues de nettoyage + sources.yml
 │   └── marts/                   ← étoile (dim_customer/product/date, fct_sales) + tests
 ├── dbt_project.yml · macros/generate_schema_name.sql
+├── infra/                     ← Terraform : datasets, comptes de service, IAM (+ imports.tf)
 ├── Dashboard entrepot.pbix      ← modèle + dashboard (documenté in-situ)
 ├── outputs/dashboard-vue-ensemble.png
 └── docs/
@@ -151,6 +168,8 @@ projet-13-entrepot-central-bigquery/
 - **Infra cloud réelle** : compte de service IAM à privilège minimal
   (`bigquery.dataEditor` + `bigquery.jobUser`, pas de rôle Owner), clé de
   service hors du repo, facturation activée avec garde-fous de coûts.
+- **Infrastructure as code** : Terraform importé sur l'existant (plan à 0 changement), CI séparée sur des datasets
+  dédiés avec un compte qui n'a aucun droit sur la prod.
 - **Portabilité du modèle** : la même étoile (Projet 09) tourne indifféremment
   en local (PostgreSQL/Power BI direct) et dans un entrepôt cloud managé,
   preuve que la modélisation dimensionnelle est le bon niveau d'abstraction.
