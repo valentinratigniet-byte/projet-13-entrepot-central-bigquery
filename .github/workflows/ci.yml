@@ -44,6 +44,17 @@ jobs:
           pip install -r seed/requirements.txt
           python seed/seed.py
 
+      # Référentiel pays (dim_customer.country_name) ajouté à la base P07 par le Projet 09.
+      - name: Récupérer le référentiel pays (Projet 09)
+        uses: actions/checkout@v4
+        with:
+          repository: valentinratigniet-byte/projet-09-dashboard-powerbi
+          path: projet-09
+          sparse-checkout: sql/country_names.sql
+
+      - name: Charger country_names dans la base source
+        run: docker exec -i p07_ecommerce_db psql -U portfolio -d ecommerce -v ON_ERROR_STOP=1 < projet-09/sql/country_names.sql
+
       - name: Installer les dépendances
         working-directory: projet-13
         run: pip install -r requirements.txt
