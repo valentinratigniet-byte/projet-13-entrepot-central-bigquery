@@ -12,7 +12,7 @@ import os
 import dlt
 from dlt.sources.sql_database import sql_database
 
-PG_DSN = "postgresql://portfolio:portfolio@127.0.0.1:5433/ecommerce"
+PG_DSN = "postgresql+psycopg2://portfolio:portfolio@127.0.0.1:5433/ecommerce"
 
 
 def main() -> None:
