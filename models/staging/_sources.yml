@@ -3,7 +3,7 @@ version: 2
 sources:
   - name: raw
     database: portfolio-data-vr
-    schema: raw
+    schema: "{{ env_var('RAW_DATASET', 'raw') }}"
     description: "Tables brutes chargees par dlt depuis PostgreSQL (Projet 07)."
     tables:
       - name: customer

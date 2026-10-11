@@ -4,6 +4,6 @@
     {%- if custom_schema_name is none -%}
         {{ target.schema }}
     {%- else -%}
-        {{ custom_schema_name | trim }}
+        {{ 'ci_' if target.name == 'ci' }}{{ custom_schema_name | trim }}
     {%- endif -%}
 {%- endmacro %}

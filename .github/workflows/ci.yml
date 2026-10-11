@@ -1,0 +1,64 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  elt-bigquery:
+    runs-on: ubuntu-latest
+    env:
+      RAW_DATASET: ci_raw
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: projet-13
+
+      # Source = base du Projet 07 (même compte, port 5433) — voir README.
+      - name: Récupérer la base du Projet 07
+        uses: actions/checkout@v4
+        with:
+          repository: valentinratigniet-byte/projet-07-base-ecommerce
+          path: projet-07
+
+      - name: Démarrer PostgreSQL (Projet 07)
+        working-directory: projet-07
+        run: docker compose up -d
+
+      - name: Attendre que la base soit prête
+        run: |
+          for i in $(seq 1 20); do
+            docker exec p07_ecommerce_db pg_isready -U portfolio -d ecommerce && exit 0
+            sleep 2
+          done
+          echo "Postgres jamais devenu ready" >&2
+          exit 1
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Peupler la base source (Faker)
+        working-directory: projet-07
+        run: |
+          pip install -r seed/requirements.txt
+          python seed/seed.py
+
+      - name: Installer les dépendances
+        working-directory: projet-13
+        run: pip install -r requirements.txt
+
+      - name: Clé du compte de service CI
+        env:
+          GCP_SA_KEY_CI: ${{ secrets.GCP_SA_KEY_CI }}
+        run: |
+          printf '%s' "$GCP_SA_KEY_CI" > "$RUNNER_TEMP/sa.json"
+          echo "GOOGLE_APPLICATION_CREDENTIALS=$RUNNER_TEMP/sa.json" >> "$GITHUB_ENV"
+
+      - name: Extraction + chargement (dlt -> BigQuery ci_raw)
+        working-directory: projet-13
+        run: python src/load_postgres_to_bq.py
+
+      - name: dbt build (ci_staging -> ci_marts, tests)
+        working-directory: projet-13
+        run: dbt build --profiles-dir ci

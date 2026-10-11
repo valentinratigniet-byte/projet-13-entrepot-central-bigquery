@@ -1,0 +1,13 @@
+# Profil CI : datasets ci_staging / ci_marts (préfixe ajouté par generate_schema_name),
+# compte de service ci-dbt qui n'a de droits que sur les datasets ci_*.
+portfolio_bq:
+  target: ci
+  outputs:
+    ci:
+      type: bigquery
+      method: service-account
+      keyfile: "{{ env_var('GOOGLE_APPLICATION_CREDENTIALS') }}"
+      project: portfolio-data-vr
+      dataset: ci_staging
+      location: EU
+      threads: 4

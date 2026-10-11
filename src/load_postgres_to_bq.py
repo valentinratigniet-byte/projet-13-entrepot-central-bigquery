@@ -7,6 +7,8 @@ service (~/.gcp/dbt-loader.json), conteneur Docker p07_ecommerce_db démarré.
 
 Usage : python src/load_postgres_to_bq.py
 """
+import os
+
 import dlt
 from dlt.sources.sql_database import sql_database
 
@@ -17,7 +19,7 @@ def main() -> None:
     pipeline = dlt.pipeline(
         pipeline_name="p07_to_bq",
         destination=dlt.destinations.bigquery(location="EU"),  # datasets crees en EU
-        dataset_name="raw",
+        dataset_name=os.environ.get("RAW_DATASET", "raw"),  # ci_raw en CI
     )
     # Tables chargees telles quelles (customer, orders, ...) : source unique
     # pour l'instant, un prefixe ne serait utile qu'avec plusieurs bases.
