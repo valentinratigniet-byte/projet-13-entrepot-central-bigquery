@@ -1,4 +1,5 @@
 # Projet 13 — Entrepôt central BigQuery (ELT cloud)
+[![CI](https://github.com/valentinratigniet-byte/projet-13-entrepot-central-bigquery/actions/workflows/ci.yml/badge.svg)](https://github.com/valentinratigniet-byte/projet-13-entrepot-central-bigquery/actions/workflows/ci.yml)
 
 > Les 12 premiers projets tournent en local (Docker, DuckDB, SQLite). Celui-ci
 > répond à une question différente : **et si le portfolio devait vivre dans le
